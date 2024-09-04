@@ -1,0 +1,101 @@
+{% macro navbar(content, title, extraclass, responsiveButton) %} 
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark {{ extraclass }}">
+    <a class="navbar-brand" href="#">{{ title | safe }}</a>
+    {% if content %}
+	{% if responsiveButton %}
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+	{% endif %}
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav mr-auto">
+        {% for opt in content %}
+          {% if not opt.floatRight %}
+            {% if not opt.options %}
+            <li class="nav-item{{ " active" if opt.isCurrent }}">
+              <a class="nav-link{{ " disabled inactiveLink" if opt.isDisabled }}" href="{{ opt.href }}">{{ opt.name | safe }}{{ (opt.currentMarker | safe) if opt.isCurrent }}</a>
+            </li>
+            {% else %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle{{ " dropdown-image" if opt.image and opt.image != "" }}" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% if not opt.image or opt.image == "" %}
+                  {{ opt.name | safe }}
+                {% else %}
+                  <img src="{{ opt.image }}" alt="{{ opt.name }}"/>
+                {% endif %}
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              {% for o in opt.options %}
+                {% if not o.separator %}
+                <a class="dropdown-item{{ " disabled inactiveLink" if o.isDisabled }}{{ " active" if o.isCurrent }}" href="{{ o.href }}">{{ o.name | safe }}</a>
+                {% else %}
+                {{ o.separator | safe }}
+                {% endif %}
+              {% endfor %}
+              </div>
+            </li>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </ul>
+      <ul class="navbar-nav">
+        {% for opt in content %}
+          {% if opt.floatRight %}
+            {% if not opt.options %}
+            <li class="nav-item{{ " active" if opt.isCurrent }}">
+              <a class="nav-link{{ " disabled inactiveLink" if opt.isDisabled }}" href="{{ opt.href }}">{{ opt.name | safe }}{{ (opt.currentMarker | safe) if opt.isCurrent }}</a>
+            </li>
+            {% else %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle{{ " dropdown-image" if opt.image and opt.image != "" }}" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {% if not opt.image or opt.image == "" %}
+                  {{ opt.name | safe }}
+                {% else %}
+                  <img src="{{ opt.image }}" alt="{{ opt.name }}"/>
+                {% endif %}
+              </a>
+              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              {% for o in opt.options %}
+                {% if not o.separator %}
+                <a class="dropdown-item{{ " disabled inactiveLink" if o.isDisabled }}{{ " active" if o.isCurrent }}" href="{{ o.href }}">{{ o.name | safe }}</a>
+                {% else %}
+                {{ o.separator | safe }}
+                {% endif %}
+              {% endfor %}
+              </div>
+            </li>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+	{% endif %}
+  </nav>
+{% endmacro %}
+
+{% macro jumbotron(title, subtitle) %}  
+  <div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h1>{{ title }}</h1>
+      <p class="lead">{{ subtitle }}</p>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro listgroup(content) %}
+  {% if content.title %}
+    {% set tag = content.title.tag if content.title.tag else "h2" %}
+    <{{ tag }}{% if title.classes %} class="{{ title.classes | join(" ") }}"{% endif %}{% if title.ids %} id="{{ title.ids | join(" ") }}"{% endif %}>
+      {{ title.content | safe }}
+    </{{ tag }}>
+  {% endif %}
+  <ul class="list-group {% if content.classes %} {{ content.classes | join(" ") }}{% endif %}"{% if content.ids %} id="{{ content.ids | join(" ") }}"{% endif %}>
+    {% for opt in content.rows %}
+      <li class="row list-group-item{% if opt.classes %} {{ opt.classes | join(" ") }}{% endif %}"{% if opt.ids %} id="{{ opt.ids | join(" ") }}"{% endif %}>
+        {% for col in opt.columns %}
+          {{ col | safe }}
+        {% endfor %}
+      </li>
+    {% endfor %}
+  </ul>
+{% endmacro %}
